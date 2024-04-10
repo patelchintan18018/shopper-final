@@ -1,13 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserData } from "../Store/auth";
 
 function Contact() {
+
+  const {token,userData} = useSelector((state)=> state.auth);
+  const dispatch = useDispatch()
   const [contactData, setcontactData] = useState({
     name: "",
     email: "",
     message: "",
   });
-  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (userData && userData.userData) {
+      console.log(userData)
+      const {name, email} = userData.userData;
+      
+      setcontactData({
+        name: name || "",
+        email: email || "",
+        message: "",
+      });
+    }
+  }, [userData]);
+  
+  useEffect(()=>{
+    dispatch(getUserData());
+  },[])
+
 
   const handleContactChange = (e) => {
     const name = e.target.name;
@@ -18,9 +40,10 @@ function Contact() {
 
   const handleContactSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    if (localStorage.getItem("token")) {
+    
+    if (token) {
       try {
+        
         const { data } = await axios.post("/api/contact", {
           name: contactData.name,
           email: contactData.email,
@@ -31,7 +54,7 @@ function Contact() {
           console.log(data.message);
         } else {
           alert("Internal server error");
-          setError(data.message);
+          
         }
         setcontactData({ name: "", email: "", message: "" });
       } catch (error) {

@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {storeTokenInLS} from '../Store/auth'
 
 function Login() {
 
     const navigate = useNavigate();
-    
+    const dispatch = useDispatch();
 
     const [formData, setformData] = useState({
         email : "",
@@ -29,7 +31,8 @@ function Login() {
           if(data.success){
             alert("User login Successfully");
             console.log(data);
-            localStorage.setItem('token', data.token);
+            // localStorage.setItem('token', data.token);
+            dispatch(storeTokenInLS(data.token));
             navigate('/');
           }else{
             setError(data.message)

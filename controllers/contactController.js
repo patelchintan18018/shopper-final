@@ -10,7 +10,17 @@ exports.addContactDeatils = async(req,res) => {
             message: req.body.message,
         });
         await contactDeatils.save();
-        res.status(200).json({ success: true, message: "record added" });
+        res.status(200).json({ success: true, message: "record added"});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+}
+
+exports.getUserData = async(req,res) => {
+    try {
+        const userData = req.user;
+        res.status(200).json({ userData});
     } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, message: "Internal Server Error" });

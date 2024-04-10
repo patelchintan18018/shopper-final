@@ -1,11 +1,13 @@
 import React, { useState , useEffect} from "react";
 import { NavLink } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { removeTokenFromLS } from "../Store/auth";
 
 function Navbar() {
   const [Open, setOpen] = useState(false);
-
-  const [isLoggedIn, setisLoggedIn] = useState(!!localStorage.getItem("token"));
+  const {token,userData} = useSelector((state)=> state.auth);
+  const dispatch = useDispatch();
+  
   
 
   const { myBag } = useSelector((state) => state.cart);
@@ -82,13 +84,14 @@ function Navbar() {
         <div className="login-cart flex items-center gap-3 sm:gap-5">
          
 
-          {isLoggedIn ? (
+          {!!token ? (
             <NavLink to="/SignUp">
               <button
                 className="py-2 px-5 md:px-10 border-2 border-red-500 rounded-3xl hover:bg-red-500 hover:text-white"
                 onClick={() => {
-                  localStorage.removeItem("token");
-                  setisLoggedIn(false);
+                  // localStorage.removeItem("token");
+                  dispatch(removeTokenFromLS());
+                  
                 }}
               >
                 Logout
